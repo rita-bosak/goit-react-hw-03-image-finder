@@ -25,7 +25,7 @@ export default class App extends React.Component {
     const prevName = prevState.imageName;
     const nextName = this.state.imageName;
 
-    if (prevName !== nextName) {
+    if (prevName !== nextName && nextName !== '') {
       this.setState({ page: 1, isLoading: true, showBtn: false });
 
       const response = await axios.get(
