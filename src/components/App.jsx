@@ -15,6 +15,7 @@ export default class App extends React.Component {
     imageName: '',
     images: null,
     page: 1,
+    perPage: 12,
     isLoading: false,
     modalImage: null,
     showModal: false,
@@ -24,17 +25,18 @@ export default class App extends React.Component {
   async componentDidUpdate(prevProps, prevState) {
     const prevName = prevState.imageName;
     const nextName = this.state.imageName;
+    const { perPage } = this.state;
 
     if (prevName !== nextName && nextName !== '') {
       this.setState({ page: 1, isLoading: true, showBtn: false });
 
       const response = await axios.get(
-        `/?q=${nextName}&page=1&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`
+        `/?q=${nextName}&page=1&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=${perPage}`
       );
 
       const responseData = response.data.hits;
 
-      if (responseData.length >= 12) {
+      if (responseData.length >= perPage) {
         this.setState({ showBtn: true });
       }
 
@@ -49,15 +51,15 @@ export default class App extends React.Component {
   }
 
   handleLoadMoreBtn = async () => {
-    const { imageName, page } = this.state;
+    const { imageName, page, perPage } = this.state;
 
     const response = await axios.get(
-      `/?q=${imageName}&page=${page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`
+      `/?q=${imageName}&page=${page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=${perPage}`
     );
 
     const responseData = response.data.hits;
 
-    if (responseData.length < 12) {
+    if (responseData.length < perPage) {
       this.setState({ showBtn: false });
     }
 
